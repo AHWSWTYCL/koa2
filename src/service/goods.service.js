@@ -14,7 +14,29 @@ class GoodsService {
 
     async removeGoods(id) {
         const res = await Goods.destroy({where: {id}})
-        return res[0] > 0 ? true : false
+        return res > 0 ? true : false
+    }
+
+    async restoreGoods(id) {
+        const res = await Goods.restore({where: {id}})
+        return res > 0 ? true : false
+    }
+
+    async findGoods(pageNum, pageSize) {
+        let offset = (pageNum - 1) * pageSize
+        let limit = Number(pageSize)
+        // const count = await Goods.count()
+        // const rows = await Goods.findAll({offset, limit})
+        const {count, rows} = await Goods.findAndCountAll({
+            offset,
+            limit
+        })
+        return {
+            pageNum,
+            pageSize,
+            total: count,
+            list: rows
+        }
     }
 }
 
